@@ -1,6 +1,10 @@
+mod scanner;
+
 use std::env;
 use std::fs;
 use std::io::{self, Write};
+use scanner::print_lexemen;
+
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -24,7 +28,7 @@ fn main() {
 
             // Uncomment this block to pass the first stage
              if !file_contents.is_empty() {
-                 panic!("Scanner not implemented");
+                 print_lexemen(file_contents);
              } else {
                  println!("EOF  null"); // Placeholder, remove this line when implementing the scanner
              }

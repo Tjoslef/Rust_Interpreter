@@ -9,6 +9,10 @@ pub fn print_lexemen(content: String){
 
             ')' => println!("RIGHT_PAREN ) null"),
 
+            '}' => println!("RIGHT_BRACE }} null"),
+
+            '{' => println!("LEFT_BRACE {{ null"),
+
             _ => println!("unknown {}", char),
         }
     }

@@ -37,5 +37,7 @@ fn main() {
             writeln!(io::stderr(), "Unknown command: {}", command).unwrap();
             return;
         }
+
     }
+
 }

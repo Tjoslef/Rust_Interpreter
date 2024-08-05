@@ -1,13 +1,24 @@
 use std::process;
-pub fn print_lexemen(content: String){
-    let mut nline = 1;
+
+pub fn print_lexemen(content: String) {
+    let mut string_stg: [char; 2] = [' ', ' '];
     let mut test_r = true;
-    for char in content.chars(){
-
-        if char.is_whitespace(){
+    let mut rep_op: i32 = 0;
+    for char in content.chars() {
+        if char.is_whitespace() {
             continue
-
         }
+        if rep_op == 1 {
+            match string_stg[0] {
+                '<' => println!("LESS < null"),
+                '>' => println!("GREATER >  null"),
+                '=' => println!("EQUAL = null"),
+                
+                _ => {}
+            }
+            rep_op = 0
+        }
+
         match char {
             '(' => println!("LEFT_PAREN ( null"),
 
@@ -28,17 +39,29 @@ pub fn print_lexemen(content: String){
             '-' => println!("MINUS - null"),
 
             ';' => println!("SEMICOLON ; null"),
-            '\n' =>  nline += 1,
+
+            '='|'<'|'>'|'!' =>
+                if string_stg[0] != ' ' {
+
+                    match string_stg[0] {
+                        '<' => println!("LESS_EQUAL <= null"),
+                        '>' => println!("GREATER_EQUAL <= null"),
+                        '=' => println!("EQUAL_EQUAL == null"),
+                        '!' => println!("BANG_EQUAL != null"),
+                        _ => {}
+                    }
+                    string_stg = [' ', ' '];
+
+                }
+                else {
+                    string_stg[0] = char;
+                    rep_op = 1;
+                },
 
             a => {
-
-                eprintln!("[line 1] Error: Unexpected character: {}",char);
+                eprintln!("[line 1] Error: Unexpected character: {}", char);
                 test_r = false
-
-
             }
-
-
         }
     }
     println!("EOF  null");

@@ -12,11 +12,15 @@ pub fn tokenize(filename: &String) -> Result<()> {
     let line = 1usize;
     let mut has_error = false;
     let mut token = vec![];
-    while let Some(&c) = char_cont.peek() {
+    while let Some(c) = char_cont.next() {
         match c {
             '(' => token.push(Token::new(TokenType::LEFT_PAREN, c.to_string())),
-            ')' => token.push(Token::new(TokenType::RIGHT_PAREN, c.to_string())),
+
+            ')' =>
+                token.push(Token::new(TokenType::RIGHT_PAREN, c.to_string())),
+
             '{' => token.push(Token::new(TokenType::LEFT_BRACE, c.to_string())),
+
             '}' => token.push(Token::new(TokenType::RIGHT_BRACE, c.to_string())),
             ',' => token.push(Token::new(TokenType::COMMA, c.to_string())),
             '.' => token.push(Token::new(TokenType::DOT, c.to_string())),
@@ -25,22 +29,22 @@ pub fn tokenize(filename: &String) -> Result<()> {
             ';' => token.push(Token::new(TokenType::SEMICOLON, c.to_string())),
             '*' => token.push(Token::new(TokenType::STAR, c.to_string())),
             '/' => {
-                char_cont.next(); // Consume the '/'
+                // Consume the '/'
                 if let Some(&next_char) = char_cont.peek() {
                     if next_char == '/' {
-                        // This is a single-line comment, skip until end of line
-                        while let Some(&comment_char) = char_cont.peek() {
+
+                        while let Some(comment_char) = char_cont.next() {
+
                             if comment_char == '\n' {
                                 break;
                             }
                             char_cont.next();
-                        }
-                        continue; // Continue to the next character
+                        } // Continue to the next character
                     } else {
-                        token.push(Token::new(TokenType::FOWARD_SLASH, "/".to_string()));
+                        token.push(Token::new(TokenType::SLASH, "/".to_string()));
                     }
                 } else {
-                    token.push(Token::new(TokenType::FOWARD_SLASH, "/".to_string()));
+                    token.push(Token::new(TokenType::SLASH, "/".to_string()));
                 }
             },
             '=' => {
@@ -88,7 +92,7 @@ pub fn tokenize(filename: &String) -> Result<()> {
             _ => {
                 eprintln!("[line {}] Error: Unexpected character: {}", line, c);
                 has_error = true;
-                char_cont.next();
+
             }
 
         }

@@ -23,7 +23,7 @@ fn main() {
             Err(e) => {
                 let _e: Error = e.downcast().unwrap();
 
-                exit(2);
+                exit(65);
             }
             _ => {}
         },

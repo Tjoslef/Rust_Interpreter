@@ -23,7 +23,7 @@ pub enum TokenType {
 
     STAR,
 
-    FOWARD_SLASH,
+    SLASH,
 
     EQUAL,
 

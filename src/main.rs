@@ -22,6 +22,7 @@ fn main() {
         "tokenize" => match tokenize(filename) {
             Err(e) => {
                 let e: Error = e.downcast().unwrap();
+                println!("hello");
                 exit(e.exit_code as i32);
             }
             _ => {}

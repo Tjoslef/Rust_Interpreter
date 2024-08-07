@@ -33,9 +33,15 @@ pub enum TokenType {
 
     BANG,
 
+    GREATER_EQUAL,
+
+    GREATER,
+
+    LESS_EQUAL,
+
+    LESS,
+
     EOF,
-
-
 }
 pub struct Token {
     _type: TokenType,

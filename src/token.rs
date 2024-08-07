@@ -29,7 +29,12 @@ pub enum TokenType {
 
     EQUAL_EQUAL,
 
+    BANG_EQUAL,
+
+    BANG,
+
     EOF,
+
 
 }
 pub struct Token {

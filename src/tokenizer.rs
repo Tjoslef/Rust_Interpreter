@@ -1,9 +1,9 @@
-use anyhow::{bail};
+use anyhow::{bail,Result};
 use std::fs;
 use crate::token::{Token, TokenType};
 use crate::error::{Error};
 
-pub fn tokenize(filename: &String) -> anyhow::Result<()> {
+pub fn tokenize(filename: &String) -> Result<()> {
     let file_contents = match fs::read_to_string(filename) {
         Ok(contents) => contents,
         Err(_) => bail!("Failed to read the file."),
@@ -29,7 +29,7 @@ pub fn tokenize(filename: &String) -> anyhow::Result<()> {
                 if let Some(&next_char) = char_cont.peek() {
                     if next_char == '/' {
                         // This is a single-line comment, skip until end of line
-                        while let  Some(&comment_char) = char_cont.peek() {
+                        while let Some(&comment_char) = char_cont.peek() {
                             if comment_char == '\n' {
                                 break;
                             }
@@ -61,7 +61,7 @@ pub fn tokenize(filename: &String) -> anyhow::Result<()> {
                 else {
                     token.push(Token::new(TokenType::BANG,c.to_string()));
                 }
-            }
+            },
             '>' =>{
                 let mut peekable = char_cont.clone().peekable();
                 if peekable.peek() == Some(&'='){
@@ -71,7 +71,7 @@ pub fn tokenize(filename: &String) -> anyhow::Result<()> {
                 else {
                     token.push(Token::new(TokenType::GREATER,c.to_string()));
                 }
-            }
+            },
             '<' => {
                 let mut peekable = char_cont.clone().peekable();
                 if peekable.peek() == Some(&'='){
@@ -81,13 +81,14 @@ pub fn tokenize(filename: &String) -> anyhow::Result<()> {
                 else {
                     token.push(Token::new(TokenType::LESS,c.to_string()));
                 }
-                }
+                },
 
 
 
             _ => {
                 eprintln!("[line {}] Error: Unexpected character: {}", line, c);
-                has_error = true
+                has_error = true;
+                char_cont.next();
             }
 
         }

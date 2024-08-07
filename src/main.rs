@@ -21,9 +21,9 @@ fn main() {
     match command.as_str() {
         "tokenize" => match tokenize(filename) {
             Err(e) => {
-                let e: Error = e.downcast().unwrap();
-                println!("hello");
-                exit(e.exit_code as i32);
+                let _e: Error = e.downcast().unwrap();
+
+                exit(2);
             }
             _ => {}
         },

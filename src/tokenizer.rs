@@ -13,7 +13,11 @@ pub fn tokenize(filename: &String) -> Result<()> {
     let mut has_error = false;
     let mut token = vec![];
     while let Some(c) = char_cont.next() {
+        if c.is_whitespace() {
+            continue;
+        }
         match c {
+
             '(' => token.push(Token::new(TokenType::LEFT_PAREN, c.to_string())),
 
             ')' =>

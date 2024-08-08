@@ -10,6 +10,7 @@ pub fn tokenize(filename: &String) -> Result<()> {
     };
     let mut char_cont = file_contents.chars().peekable();
     let mut line = 1;
+    let mut literals = String::new();
     let mut has_error = false;
     let mut token = vec![];
     while let Some(c) = char_cont.next() {
@@ -49,8 +50,7 @@ pub fn tokenize(filename: &String) -> Result<()> {
                 }
             },
             '=' => {
-                let mut peekable = char_cont.clone().peekable();
-                if peekable.peek() == Some(&'=') {
+                if char_cont.peek() == Some(&'=') {
                     token.push(Token::new(TokenType::EQUAL_EQUAL, "==".to_string()));
                     char_cont.next();
                 } else {
@@ -58,8 +58,7 @@ pub fn tokenize(filename: &String) -> Result<()> {
                 }
             },
             '!' => {
-                let mut peekable = char_cont.clone().peekable();
-                if peekable.peek() == Some(&'='){
+                if char_cont.peek() == Some(&'='){
                     token.push(Token::new(TokenType::BANG_EQUAL,"!=".to_string()));
                     char_cont.next();
                 }
@@ -68,8 +67,7 @@ pub fn tokenize(filename: &String) -> Result<()> {
                 }
             },
             '>' =>{
-                let mut peekable = char_cont.clone().peekable();
-                if peekable.peek() == Some(&'='){
+                if char_cont.peek() == Some(&'='){
                     token.push(Token::new(TokenType::GREATER_EQUAL,">=".to_string()));
                     char_cont.next();
                 }
@@ -78,8 +76,7 @@ pub fn tokenize(filename: &String) -> Result<()> {
                 }
             },
             '<' => {
-                let mut peekable = char_cont.clone().peekable();
-                if peekable.peek() == Some(&'='){
+                if char_cont.peek() == Some(&'='){
                     token.push(Token::new(TokenType::LESS_EQUAL,"<=".to_string()));
                     char_cont.next();
                 }
@@ -89,8 +86,26 @@ pub fn tokenize(filename: &String) -> Result<()> {
                 }
             '\n' =>{
                 line +=1;
+
             },
-            ' '|'\t'| '\r' =>{},
+            '"' =>{
+                while let Some(stringL) = char_cont.next() {
+                    if stringL =='"' {
+                        token.push(Token::new(TokenType::STRING,literals.to_string()));
+                        literals.clear();
+                        break;
+                    }else {
+                        literals.push(stringL);
+                    }
+                }
+                if !literals.is_empty(){
+                    eprintln!("[line {}] Error: Unterminated string.",line);
+                    has_error = true;
+                    literals.clear();
+                    break;
+                }
+            },
+            ' '|'\t'| '\r' =>{continue;},
 
 
             _ => {

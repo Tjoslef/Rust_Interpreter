@@ -1,3 +1,4 @@
+use std::fmt;
 use std::fmt::Display;
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
@@ -41,6 +42,8 @@ pub enum TokenType {
 
     LESS,
 
+    STRING,
+
     EOF,
 }
 pub struct Token {
@@ -60,13 +63,18 @@ impl Token {
 }
 impl Display for Token {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{:?} {} {}",
-            self._type,
-            self._string,
-            self._value.clone().unwrap_or("null".to_string())
-        )
+        match self._type {
+            TokenType::STRING => write!(f,"{:?} \"{}\" {}",self._type,self._value.clone().unwrap_or(self._string.to_string()),self._string),
+
+            _ => {
+                write!(
+                    f,
+                    "{:?} {} {}",
+                    self._type,
+                    self._string,
+                    self._value.clone().unwrap_or("null".to_string())
+                )
+            }
+        }
     }
 }
-

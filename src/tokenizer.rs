@@ -9,13 +9,11 @@ pub fn tokenize(filename: &String) -> Result<()> {
         Err(_) => bail!("Failed to read the file."),
     };
     let mut char_cont = file_contents.chars().peekable();
-    let line = 1usize;
+    let mut line = 1;
     let mut has_error = false;
     let mut token = vec![];
     while let Some(c) = char_cont.next() {
-        if c.is_whitespace() {
-            continue;
-        }
+
         match c {
 
             '(' => token.push(Token::new(TokenType::LEFT_PAREN, c.to_string())),
@@ -33,16 +31,15 @@ pub fn tokenize(filename: &String) -> Result<()> {
             ';' => token.push(Token::new(TokenType::SEMICOLON, c.to_string())),
             '*' => token.push(Token::new(TokenType::STAR, c.to_string())),
             '/' => {
-                // Consume the '/'
+
                 if let Some(&next_char) = char_cont.peek() {
                     if next_char == '/' {
-
                         while let Some(comment_char) = char_cont.next() {
-
                             if comment_char == '\n' {
+                                line += 1;
                                 break;
                             }
-                            char_cont.next();
+
                         } // Continue to the next character
                     } else {
                         token.push(Token::new(TokenType::SLASH, "/".to_string()));
@@ -89,8 +86,11 @@ pub fn tokenize(filename: &String) -> Result<()> {
                 else {
                     token.push(Token::new(TokenType::LESS,c.to_string()));
                 }
-                },
-
+                }
+            '\n' =>{
+                line +=1;
+            },
+            ' '|'\t'| '\r' =>{},
 
 
             _ => {

@@ -26,6 +26,7 @@ pub enum TokenType {
     EOF,
     NUMBER,
     ROUNDED_NUMBER,
+    IDENTIFIER,
 }
 pub struct Token {
     _type: TokenType,
@@ -49,11 +50,14 @@ impl Display for Token {
             TokenType::NUMBER =>{ if self._string.ends_with(".0") {
                 write!(f, "NUMBER {} {}", self._string.replace(".0", ""), self._string)
             } else if !self._string.contains(".") {
-                write!(f, "NUMBER {} {}.0", self._string, self._string)
-            } else {
+                write!(f, "NUMBER {} {}.0", self._string, self._string)}
+                else if self._string.ends_with(".00") {
+                    write!(f, "NUMBER {} {}.0", self._string, self._string.replace(".00",""))
+                }
+            else {
                 write!(f, "NUMBER {} {}", self._string, self._string)
             } }
-           // TokenType::ROUNDED_NUMBER =>  write!(f,"{:?} {} {}.0","NUMBER",self._value.clone().unwrap_or(self._string.to_string()),self._string),
+            TokenType::IDENTIFIER => write!(f, "{:?} {} null", self._type, self._string),
             _ => {
                 write!(
                     f,

@@ -15,7 +15,7 @@ pub fn tokenize(filename: &String) -> Result<()> {
     let mut literalNum = String::new();
     let mut has_error = false;
     let mut token = vec![];
-  'outer:while let Some(c) = char_cont.next() {
+    while let Some(c) = char_cont.next() {
 
         match c {
             '(' => token.push(Token::new(TokenType::LEFT_PAREN, c.to_string(), "".to_string())),
@@ -123,11 +123,28 @@ pub fn tokenize(filename: &String) -> Result<()> {
                     cont.push('0');
                     token.push(Token::new(TokenType::NUMBER, cont.to_string(), cont.to_string()));
                     token.push(Token::new(TokenType::DOT,".".to_string(),"".to_string()))
-                }else {
+                }
+                else {
                     token.push(Token::new(TokenType::NUMBER, cont.to_string(), cont.to_string()));
                 }
             },
+            c if  is_alpha(c) => {
+                let mut cont = String::from(c);
+                while let Some(&L) = char_cont.peek(){
+                    if !is_alpha(L) && !is_number(L){
+                        break;
+                    }else {
+                        cont.push(L);
+                        //println!("{}",cont);
+                        char_cont.next();
+                    }
+                  // token.push(Token::new(TokenType::IDENTIFIER,cont.to_string(),"".to_string()));
+                }
+
+                token.push(Token::new(TokenType::IDENTIFIER,cont.to_string(),"".to_string()));
+            },
             ' '|'\t'| '\r' =>{continue;},
+            
 
 
             _ => {
@@ -151,28 +168,9 @@ pub fn tokenize(filename: &String) -> Result<()> {
         Ok(())
     };
 }
-pub fn rounding(literalNum: &String) -> String{
-    let mut returnNum = String::new();
-    if literalNum.is_empty() {
-        return String::new();
-    } else {
-        if let Some(dot_pos) = literalNum.find('.') {
-            let integer_part = &literalNum[..dot_pos];
-            let decimal_part = &literalNum[(dot_pos + 1)..];
-            if let Some(last_digit_char) = decimal_part.chars().nth(1) {
-                if let Some(last_digit) = last_digit_char.to_digit(10) {
-                    if last_digit < 5 {
-                        returnNum = integer_part.to_string();
-                    } else {
-                        returnNum = (integer_part.parse::<i32>().unwrap() + 1).to_string();
-                    };
-                    return returnNum;
-                }
-                return String::new();
-            }
-            return String::new();
-        }
-        return String::new();
-    }
-
+pub fn is_alpha(c: char) -> bool {
+    c.is_ascii_alphabetic() || c == '_'
+}
+pub fn is_number(c:char) -> bool{
+    c.is_digit(10)
 }

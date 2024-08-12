@@ -27,12 +27,34 @@ pub enum TokenType {
     NUMBER,
     ROUNDED_NUMBER,
     IDENTIFIER,
+    AND,
+    CLASS,
+    ELSE,
+    FALSE,
+    FOR,
+    FUN,
+    IF,
+    NIL,
+    OR,
+    PRINT,
+    RETURN,
+    SUPER,
+    THIS,
+    TRUE,
+    VAR,
+    WHILE,
 }
 pub struct Token {
     _type: TokenType,
     _string: String,
     _value: String,
 
+}
+impl Copy for TokenType{}
+impl Clone for TokenType {
+    fn clone(&self) -> TokenType {
+        *self
+    }
 }
 impl Token {
     pub fn new(_type: TokenType, _string: String, _value:String ) -> Self {
@@ -43,6 +65,9 @@ impl Token {
         }
     }
 }
+
+
+
 impl Display for Token {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self._type {

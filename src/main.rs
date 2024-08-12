@@ -4,7 +4,6 @@ use std::process::exit;
 mod error;
 mod token;
 mod tokenizer;
-
 use crate::error::{Error};
 use crate::tokenizer::tokenize;
 

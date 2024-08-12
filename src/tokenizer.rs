@@ -2,22 +2,41 @@ use anyhow::{bail,Result};
 use std::fs;
 use crate::token::{Token, TokenType};
 use crate::error::{Error};
+use std::collections::{hash_map, HashMap};
+use crate::token;
 
 pub fn tokenize(filename: &String) -> Result<()> {
     let file_contents = match fs::read_to_string(filename) {
         Ok(contents) => contents,
         Err(_) => bail!("Failed to read the file."),
     };
+
+
     let mut char_cont = file_contents.chars().peekable();
     let mut line = 1;
-    let mut done = false;
     let mut literalStr = String::new();
-    let mut literalNum = String::new();
     let mut has_error = false;
     let mut token = vec![];
     while let Some(c) = char_cont.next() {
-
+        let mut keywords = HashMap::new();
+        keywords.insert("and", TokenType::AND);
+        keywords.insert("class", TokenType::CLASS);
+        keywords.insert("else", TokenType::ELSE);
+        keywords.insert("false", TokenType::FALSE);
+        keywords.insert("for", TokenType::FOR);
+        keywords.insert("fun", TokenType::FUN);
+        keywords.insert("if", TokenType::IF);
+        keywords.insert("nil", TokenType::NIL);
+        keywords.insert("or", TokenType::OR);
+        keywords.insert("print", TokenType::PRINT);
+        keywords.insert("return", TokenType::RETURN);
+        keywords.insert("super", TokenType::SUPER);
+        keywords.insert("this", TokenType::THIS);
+        keywords.insert("true", TokenType::TRUE);
+        keywords.insert("var", TokenType::VAR);
+        keywords.insert("while", TokenType::WHILE);
         match c {
+
             '(' => token.push(Token::new(TokenType::LEFT_PAREN, c.to_string(), "".to_string())),
 
             ')' =>
@@ -88,7 +107,7 @@ pub fn tokenize(filename: &String) -> Result<()> {
             '"' => {
                 while let Some(stringL) = char_cont.next() {
                     if stringL == '"' {
-                        token.push(Token::new(TokenType::STRING, literalStr.to_string(), literalNum.to_string()));
+                        token.push(Token::new(TokenType::STRING, literalStr.to_string(), "".to_string()));
                         literalStr.clear();
                         break;
                     } else {
@@ -140,9 +159,14 @@ pub fn tokenize(filename: &String) -> Result<()> {
                     }
                   // token.push(Token::new(TokenType::IDENTIFIER,cont.to_string(),"".to_string()));
                 }
+                if let Some(keyword_type) = keywords.get(cont.as_str()){
 
-                token.push(Token::new(TokenType::IDENTIFIER,cont.to_string(),"".to_string()));
-            },
+                    let token_type = keyword_type.clone();
+
+                    token.push(Token::new(token_type,cont.to_string(), "".to_string()));
+                }else {
+                    token.push(Token::new(TokenType::IDENTIFIER, cont.to_string(), "".to_string()));
+                }},
             ' '|'\t'| '\r' =>{continue;},
             
 
@@ -155,6 +179,8 @@ pub fn tokenize(filename: &String) -> Result<()> {
 
         }
     }
+
+
 
     token.push(Token::new(TokenType::EOF, "".to_string(),"".to_string()));
 

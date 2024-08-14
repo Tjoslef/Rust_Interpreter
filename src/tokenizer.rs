@@ -86,7 +86,7 @@ pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> 
                     token.push(Token::new(TokenType::Symbol(SymbolTokenType::BANG_EQUAL), "!=".to_string(), "".to_string()));
                     char_cont.next();
                 } else {
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::EQUAL), c.to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::BANG), c.to_string(), "".to_string()));
                 }
             },
             '>' => {

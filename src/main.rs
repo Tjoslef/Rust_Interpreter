@@ -34,9 +34,9 @@ fn main() {
                 let mut parser = Parser::new(&tokens);
 
                 match parser.parse() {
-                    Ok(_) => {}, // Successfully parsed, the result is printed if `print_expr` is true.
-                    Err(e) => {
-                        eprintln!("Error during parsing: {}", e);
+                    Some(_) => {}, // Successfully parsed, the result is printed if `print_expr` is true.
+                    None => {
+                        eprintln!("Error during parsing");
                         exit(65);
                     }
                 }
@@ -50,13 +50,13 @@ fn main() {
             Ok(tokens) => {
                 let mut parser = Parser::new(&tokens);
                 match parser.parse() {
-                    Ok(expression) => {
-                        let result = visit::Evaluator::evaluate(expression);
+                    Some(expression) => {
+                        let result = visit::Evaluator::evaluate(Some(expression));
                         println!
                         ("{}",result);
                     }
-                    Err(e) => {
-                        eprintln!("Error during parsing: {}", e);
+                    None => {
+                        eprintln!("Error during parsing");
                         exit(0);
                     }
                 }

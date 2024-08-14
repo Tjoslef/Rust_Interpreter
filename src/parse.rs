@@ -1,3 +1,5 @@
+use std::process::exit;
+use log::error;
 use crate::token::{LiteralTokenType, Token, TokenType}; // Ensure this path is correct
 
 pub struct Parser<'a> {
@@ -22,15 +24,35 @@ impl<'a> Parser<'a> {
         let token = self.advance();
         match &token._type {
             TokenType::Literal(LiteralTokenType::NUMBER) => {
-                let value = token._string.parse::<i64>().unwrap();
-                Ok(Expr::IntLit(value))
+                if token._string.contains('.') {
+                    // If the string contains a dot, parse it as a floating-point number
+                    match token._string.parse::<f64>() {
+                        Ok(value) => Ok(Expr::FloatLit(value)) ,
+                        Err(e) => {
+                            eprintln!("Error during parsing a float number: {:?}", e);
+                            exit(65); // Exit with status code 65
+                        }
+                    }
+
+                } else {
+                    match token._string.parse::<i64>() {
+                        Ok(value) => Ok(Expr::IntLit(value)),
+                        Err(e) => {
+                            eprintln!("Error during parsing an integer number: {:?}", e);
+                            exit(65); // Exit with status code 65
+                        }
+                    }
+
+                }
             }
             TokenType::Keyword(_) => Ok(Expr::Literal(token._string.clone())),
+            TokenType::Literal(LiteralTokenType::STRING) => Ok(Expr::Literal(token._string.clone())),
             _ => Err("Unexpected token".to_string()),
         }
     }
 
-    fn advance(&mut self) -> &Token {
+    fn advance(&mut self) -> &Token
+    {
         let token = &self.tokens[self.current];
         self.current += 1;
         token
@@ -40,5 +62,6 @@ impl<'a> Parser<'a> {
 // Define Expr as required
 pub enum Expr {
     IntLit(i64),
+    FloatLit(f64),
     Literal(String),
 }

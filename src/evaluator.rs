@@ -11,6 +11,7 @@ pub mod ast {
     pub enum Expr {
         Literal(String),
         IntLit(i64),
+        FloatLit(f64),
 
     }
 }
@@ -31,6 +32,7 @@ pub mod visit {
         match expression {
         parse::Expr::Literal(literal) => literal.to_owned(),
             parse::Expr::IntLit(int_val) => int_val.to_string(),
+            parse::Expr::FloatLit(float_val) => float_val.to_string(),
     }
 
 }

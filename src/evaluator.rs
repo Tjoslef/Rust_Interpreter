@@ -36,6 +36,7 @@ pub mod visit {
         Some(Expr::Literal(literal)) => literal.to_owned(),
             Some(Expr::IntLit(int_val)) => int_val.to_string(),
             Some(Expr::FloatLit(float_val)) => float_val.to_string(),
+            Some(Expr::BoolLite(bool_val)) => bool_val.to_string(),
             _=>{
                let mut ups = String::new();
                 ups.push_str("error in evaluate");

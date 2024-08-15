@@ -1,7 +1,8 @@
 use std::fmt;
 use std::fmt::Display;
-#[derive(Debug)]
+
 #[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum TokenType {
     // Grouped as symbols
     Symbol(SymbolTokenType),
@@ -16,8 +17,8 @@ pub enum TokenType {
     EOF,
 }
 
-#[derive(Debug)]
-#[derive(Copy, Clone)]
+
+#[derive(Debug, PartialEq, Eq, Copy,Clone)]
 pub enum SymbolTokenType {
     LEFT_PAREN,
     RIGHT_PAREN,
@@ -40,8 +41,8 @@ pub enum SymbolTokenType {
     LESS,
 }
 
-#[derive(Debug)]
-#[derive(Copy, Clone)]
+
+#[derive(Debug, PartialEq, Eq, Copy,Clone)]
 pub enum LiteralTokenType {
     STRING,
     NUMBER,
@@ -49,8 +50,8 @@ pub enum LiteralTokenType {
     IDENTIFIER,
 }
 
-#[derive(Debug)]
-#[derive(Copy, Clone)]
+
+#[derive(Debug, PartialEq, Eq, Copy,Clone)]
 pub enum KeywordTokenType {
 
     AND,
@@ -79,9 +80,7 @@ pub struct Token {
 impl Copy for TokenType{}
 
 impl Clone for TokenType {
-    fn clone(&self) -> TokenType {
-        *self
-    }
+  fn clone(&self) -> TokenType { *self }
 }
 impl Token {
     pub fn new(_type: TokenType, _string: String, _value:String ) -> Self {

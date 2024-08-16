@@ -12,6 +12,8 @@ pub mod ast {
         Literal(String),
         IntLit(i64),
         FloatLit(f64),
+        Mult(Box<Expr>, Box<Expr>),
+        Div(Box<Expr>, Box<Expr>),
 
     }
 }
@@ -37,6 +39,7 @@ pub mod visit {
             Some(Expr::IntLit(int_val)) => int_val.to_string(),
             Some(Expr::FloatLit(float_val)) => float_val.to_string(),
             Some(Expr::BoolLite(bool_val)) => bool_val.to_string(),
+            Some(Expr::Mult(float_val1)) => float_val1.to_string(),
             _=>{
                let mut ups = String::new();
                 ups.push_str("error in evaluate");

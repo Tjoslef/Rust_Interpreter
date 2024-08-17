@@ -1,9 +1,13 @@
+use std::fmt::Display;
+use crate::parse::Expr;
+use crate::token::{SymbolTokenType, TokenType};
 
 pub mod ast {
+    use crate::Parser;
+
     pub enum Stmt{
         Expr(Expr),
         Let(Name,Expr),
-        //Binery(BInaryExpr),
     }
     pub struct Name{
        pub value:String
@@ -12,18 +16,34 @@ pub mod ast {
         Literal(String),
         IntLit(i64),
         FloatLit(f64),
-        //Binary(Box<BinaryExpr>),
 
     }
-    //pub struct BinaryExpr {
-      //  pub left: Expr,
-        //pub op: TokenType,
-      //  pub right: Expr,
-   // }
+
 }
-pub mod visit {
-    use crate::parse::Expr;
-    use crate::token::{SymbolTokenType, TokenType};
+#[derive(Debug)]
+pub enum Value {
+    Bool(bool),
+    Number(f64),
+    String(String),
+    Nil,
+}
+
+impl Display for Value {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Value::Bool(b) => write!(f, "{}", b),
+            Value::Number(n) => write!(f, "{}", remove_trailing_zeros(n)),
+            Value::String(s) => write!(f, "{}", s),
+            Value::Nil => write!(f, "nil"),
+        }
+    }
+}
+
+fn remove_trailing_zeros(n: &f64) -> String {
+    let y = (n * 100_000_000.0).round() / 100_000_000.0;
+    format!("{}", y)
+}
+
 
     pub trait Visitor<T> {
         fn visit_literal_expr(&mut self, e: Option<(Expr)>) -> T;
@@ -31,37 +51,49 @@ pub mod visit {
 
     pub struct Evaluator;
     impl Evaluator {
-        pub fn evaluate(expression: Option<Expr>) -> String {
-            match expression {
-                Some(Expr::Literal(literal)) => literal.to_owned(),
-                Some(Expr::IntLit(int_val)) => int_val.to_string(),
-                Some(Expr::FloatLit(float_val)) => float_val.to_string(),
-                Some(Expr::BoolLite(bool_val)) => bool_val.to_string(),
-                Some(Expr::Mult(float_val1)) => float_val1.to_string(),
-                Some(Expr::Binary(binary_expr)) => {
-                    println!("evaluator reach");
-                    let left = Evaluator::evaluate(Some(binary_expr.left)); // Pass the left side as an `Option<Expr>`
-                    let right = Evaluator::evaluate(Some(binary_expr.right)); // Pass the right side as an `Option<Expr>`
-
-                    // Convert strings to numbers for arithmetic operations
-                    let left_num = left.parse::<f64>().unwrap_or(0.0);
-                    let right_num = right.parse::<f64>().unwrap_or(0.0);
-
-                    match binary_expr.op {
-                        SymbolTokenType::STAR => (left_num * right_num).to_string(),
-                        SymbolTokenType::SLASH => {
-                            if right_num == 0.0 {
-                                panic!("Division by zero is not allowed."); // Handle division by zero
-                            }
-                            println!("{}{}",left_num,right_num);
-                            (left_num / right_num).to_string()
-
+        pub fn eval(expr: &Expr) -> Result<Value, &'static str> {
+            let value = match expr {
+               Expr::Nil => Value::Nil,
+                Expr::Literal(literal) => Value::String(literal.clone()),
+                Expr::FloatLit(int_val) => Value::Number(int_val.clone()),
+                Expr::BoolLite(bool_val) => Value::Bool(*bool_val),
+                Expr::Group(expr) => Evaluator::eval(expr)?,
+                Expr::Unary(op, expr) => {
+                    let value = Evaluator::eval(expr)?;
+                    match op._type {
+                        TokenType::Symbol(SymbolTokenType::BANG) => match value {
+                            Value::Bool(b) => Value::Bool(!b),
+                            Value::Number(n) => Value::Bool(n == 0.0),
+                            Value::String(s) => Value::Bool(s.is_empty()),
+                            Value::Nil => Value::Bool(true),
                         },
-                        _ => "Unsupported operation".to_string(), // Handle other operations
+                        TokenType::Symbol(SymbolTokenType::MINUS) => match value {
+                            Value::Number(n) => Value::Number(-n),
+                            _ => return Err("Operand must be a number."),
+                        },
+                        _ => unreachable!(),
                     }
                 }
-                _ => "Error in evaluation".to_string(), // Catch-all error message
-            }
+                Expr::Binary(op, left, right) => {
+                    let left = Evaluator::eval(left)?;
+                    let right = Evaluator::eval(right)?;
+                    match op._type {
+                        TokenType::Symbol(SymbolTokenType::STAR) => {
+                            match (left, right) {
+                                (Value::Number(l), Value::Number(r)) => Value::Number(l * r),
+                                _ =>  return Err("Operands must be numbers."),
+                            }
+                        },
+                        TokenType::Symbol(SymbolTokenType::SLASH) => match (left, right) {
+                            (Value::Number(l), Value::Number(r)) => Value::Number(l / r),
+                            _ => return Err("Operands must be numbers."),
+                        },
+                        // Handle other operators as needed
+                        _ => todo!(),  // Placeholder for unhandled operations
+                    }
+                }
+                _=>{return Err("mismatch")}
+            };
+            Ok(value)
         }
     }
-}

@@ -71,6 +71,7 @@ pub enum KeywordTokenType {
     VAR,
     WHILE,
 }
+#[derive(Debug,Clone)]
 pub struct Token {
    pub _type: TokenType,
    pub _string: String,
@@ -82,6 +83,8 @@ impl Copy for TokenType{}
 impl Clone for TokenType {
   fn clone(&self) -> TokenType { *self }
 }
+
+
 impl Token {
     pub fn new(_type: TokenType, _string: String, _value:String ) -> Self {
         Token {

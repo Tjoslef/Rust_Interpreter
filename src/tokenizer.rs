@@ -3,7 +3,6 @@ use std::fs;
 use crate::token::{KeywordTokenType, LiteralTokenType, SymbolTokenType, Token, TokenType};
 use crate::error::{Error};
 use std::collections::{HashMap};
-use crate::token::KeywordTokenType::AND;
 
 pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> {
     let file_contents = match fs::read_to_string(filename) {
@@ -161,7 +160,6 @@ pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> 
                         //println!("{}",cont);
                         char_cont.next();
                     }
-                  // token.push(Token::new(TokenType::IDENTIFIER,cont.to_string(),"".to_string()));
                 }
                 if let Some(keyword_type) = keywords.get(cont.as_str()){
                     let token_type = keyword_type.clone();
@@ -199,7 +197,7 @@ pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> 
     return if has_error {
         Err(Error::new(65))
     }else {
-        let tokens: Vec<Token> = token; // Replace with actual tokenization result
+        let tokens: Vec<Token> = token;
         Ok(tokens)
     }
 }
@@ -213,6 +211,6 @@ fn string_to_bool(s: &String) -> Option<bool> {
     match s.to_lowercase().as_str() {
         "true" => Some(true),
         "false" => Some(false),
-        _ => None, // Return None if the string doesn't match "true" or "false"
+        _ => None,
     }
 }

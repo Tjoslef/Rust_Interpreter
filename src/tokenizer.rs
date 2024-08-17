@@ -39,21 +39,21 @@ pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> 
         keywords.insert("var", TokenType::Keyword(KeywordTokenType::VAR));
         keywords.insert("while", TokenType::Keyword(KeywordTokenType::WHILE));
 
-        fn push_token(token_vec: &mut Vec<Token>, token_type: TokenType, c: char) {
-            token_vec.push(Token::new(token_type, c.to_string(), "".to_string()));
+        fn push_token(token_vec: &mut Vec<Token>, token_type: TokenType, c: char,num : i32) {
+            token_vec.push(Token::new(token_type, c.to_string(), "".to_string(),num));
         }
         match c {
 
-            '(' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::LEFT_PAREN), c),
-            ')' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::RIGHT_PAREN), c),
-            '{' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::LEFT_BRACE), c),
-            '}' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::RIGHT_BRACE), c),
-            ',' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::COMMA), c),
-            '.' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::DOT), c),
-            '-' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::MINUS), c),
-            '+' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::PLUS), c),
-            ';' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::SEMICOLON), c),
-            '*' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::STAR), c),
+            '(' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::LEFT_PAREN), c,line),
+            ')' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::RIGHT_PAREN), c,line),
+            '{' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::LEFT_BRACE), c,line),
+            '}' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::RIGHT_BRACE), c,line),
+            ',' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::COMMA), c,line),
+            '.' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::DOT), c,line),
+            '-' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::MINUS), c,line),
+            '+' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::PLUS), c,line),
+            ';' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::SEMICOLON), c,line),
+            '*' => push_token(&mut token, TokenType::Symbol(SymbolTokenType::STAR), c,line),
             '/' => {
                 if let Some(&next_char) = char_cont.peek() {
                     if next_char == '/' {
@@ -64,44 +64,44 @@ pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> 
                             }
                         } // Continue to the next character
                     } else {
-                        push_token(&mut token,TokenType::Symbol(SymbolTokenType::SLASH),c);
+                        push_token(&mut token,TokenType::Symbol(SymbolTokenType::SLASH),c,line);
                     }
                 } else {
 
-                    push_token(&mut token,TokenType::Symbol(SymbolTokenType::SLASH),c);
+                    push_token(&mut token,TokenType::Symbol(SymbolTokenType::SLASH),c,line);
 ;
                 }
             },
             '=' => {
                 if char_cont.peek() == Some(&'=') {
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::EQUAL_EQUAL), "==".to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::EQUAL_EQUAL), "==".to_string(), "".to_string(),line));
                     char_cont.next();
                 } else {
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::EQUAL), c.to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::EQUAL), c.to_string(), "".to_string(),line));
                 }
             },
             '!' => {
                 if char_cont.peek() == Some(&'=') {
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::BANG_EQUAL), "!=".to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::BANG_EQUAL), "!=".to_string(), "".to_string(),line));
                     char_cont.next();
                 } else {
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::BANG), c.to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::BANG), c.to_string(), "".to_string(),line));
                 }
             },
             '>' => {
                 if char_cont.peek() == Some(&'=') {
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::GREATER_EQUAL), ">=".to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::GREATER_EQUAL), ">=".to_string(), "".to_string(),line));
                     char_cont.next();
                 } else {
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::GREATER), c.to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::GREATER), c.to_string(), "".to_string(),line));
                 }
             },
             '<' => {
                 if char_cont.peek() == Some(&'=') {
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::LESS_EQUAL), "<=".to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::LESS_EQUAL), "<=".to_string(), "".to_string(),line));
                     char_cont.next();
                 } else {
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::LESS), c.to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::LESS), c.to_string(), "".to_string(),line));
                 }
             }
             '\n' => {
@@ -110,7 +110,7 @@ pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> 
             '"' => {
                 while let Some(stringL) = char_cont.next() {
                     if stringL == '"' {
-                        token.push(Token::new(TokenType::Literal(LiteralTokenType::STRING), literalStr.to_string(), "".to_string()));
+                        token.push(Token::new(TokenType::Literal(LiteralTokenType::STRING), literalStr.to_string(), "".to_string(),line));
                         literalStr.clear();
                         break;
                     } else {
@@ -143,11 +143,11 @@ pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> 
                 }
                 if cont.ends_with('.') {
                     cont.push('0');
-                    token.push(Token::new(TokenType::Literal(LiteralTokenType::NUMBER), cont.to_string(), cont.to_string()));
-                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::DOT),".".to_string(),"".to_string()))
+                    token.push(Token::new(TokenType::Literal(LiteralTokenType::NUMBER), cont.to_string(), cont.to_string(),line));
+                    token.push(Token::new(TokenType::Symbol(SymbolTokenType::DOT),".".to_string(),"".to_string(),line))
                 }
                 else {
-                    token.push(Token::new(TokenType::Literal(LiteralTokenType::NUMBER), cont.to_string(), cont.to_string()));
+                    token.push(Token::new(TokenType::Literal(LiteralTokenType::NUMBER), cont.to_string(), cont.to_string(),line));
                 }
             },
             c if  is_alpha(c) => {
@@ -164,13 +164,13 @@ pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> 
                 if let Some(keyword_type) = keywords.get(cont.as_str()){
                     let token_type = keyword_type.clone();
                     if parsingKey == false {
-                        token.push(Token::new(token_type, cont.to_string(), "".to_string()));
+                        token.push(Token::new(token_type, cont.to_string(), "".to_string(),line));
                     }else {
-                        token.push(Token::new(token_type, cont.to_string(), "".to_string()));
+                        token.push(Token::new(token_type, cont.to_string(), "".to_string(),line));
                     }
 
                 }else {
-                    token.push(Token::new(TokenType::Literal(LiteralTokenType::IDENTIFIER), cont.to_string(), "".to_string()));
+                    token.push(Token::new(TokenType::Literal(LiteralTokenType::IDENTIFIER), cont.to_string(), "".to_string(),line));
                 }},
             ' '|'\t'| '\r' =>{continue;},
             
@@ -188,7 +188,7 @@ pub fn tokenize(filename: &String, parsingKey:bool) -> Result<Vec<Token>,Error> 
 
 
     if parsingKey == false {
-        token.push(Token::new(TokenType::EOF, "".to_string(), "".to_string()));
+        token.push(Token::new(TokenType::EOF, "".to_string(), "".to_string(),line));
 
         for token in &token {
             println!("{}", token);

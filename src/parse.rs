@@ -65,8 +65,8 @@ impl<'a> Parser<'a> {
                 Box::new(self.get_expr(tokens.next().unwrap(), tokens)),
             ),
             TokenType::Symbol(SymbolTokenType::STAR)
-           | TokenType::Symbol(SymbolTokenType::SLASH) => {
-           // | TokenType::PLUS
+           | TokenType::Symbol(SymbolTokenType::SLASH)
+           | TokenType::Symbol(SymbolTokenType::PLUS) => {
            // | TokenType::LESS
             //| TokenType::GREATER
           //  | TokenType::LESS_EQUAL
@@ -139,8 +139,8 @@ impl Display for Expr {
 }
 pub fn expr_error(token: &Token) -> ! {
     eprintln!(
-        "Error at '{}': Expect expression.",
-        token._value
+        "Error at line'{}': Expect expression.{}",
+        token._num_line,token._string
     );
     exit(65);
 }

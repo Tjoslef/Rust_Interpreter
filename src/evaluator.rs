@@ -88,6 +88,14 @@ fn remove_trailing_zeros(n: &f64) -> String {
                             (Value::Number(l), Value::Number(r)) => Value::Number(l / r),
                             _ => return Err("Operands must be numbers."),
                         },
+                        TokenType::Symbol(SymbolTokenType::PLUS) => match (left,right){
+                            (Value::Number(l),Value::Number(r)) => Value::Number(l + r),
+                            _ => return Err("Operands must be numbers"),
+                        }
+                        TokenType::Symbol(SymbolTokenType::MINUS) =>match (left,right){
+                            (Value::Number(l),Value::Number(r)) => Value::Number(l - r),
+                            _ => return Err("Operands must be numbers"),
+                        }
                         // Handle other operators as needed
                         _ => todo!(),  // Placeholder for unhandled operations
                     }

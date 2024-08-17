@@ -1,5 +1,6 @@
 use std::fmt;
 use std::fmt::Display;
+use crate::error::Error;
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq)]
@@ -76,7 +77,7 @@ pub struct Token {
    pub _type: TokenType,
    pub _string: String,
    pub _value: String,
-
+   pub _num_line: i32,
 }
 impl Copy for TokenType{}
 
@@ -86,11 +87,12 @@ impl Clone for TokenType {
 
 
 impl Token {
-    pub fn new(_type: TokenType, _string: String, _value:String ) -> Self {
+    pub fn new(_type: TokenType, _string: String, _value:String, _num_line: i32 ) -> Self {
         Token {
             _type,
             _string,
             _value,
+            _num_line,
         }
     }
 }

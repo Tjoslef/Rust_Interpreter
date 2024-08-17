@@ -90,6 +90,7 @@ fn remove_trailing_zeros(n: &f64) -> String {
                         },
                         TokenType::Symbol(SymbolTokenType::PLUS) => match (left,right){
                             (Value::Number(l),Value::Number(r)) => Value::Number(l + r),
+                            (Value::String(l),Value::String(r)) => Value::String(format!("{}{}",l,r)),
                             _ => return Err("Operands must be numbers"),
                         }
                         TokenType::Symbol(SymbolTokenType::MINUS) =>match (left,right){

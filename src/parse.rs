@@ -66,11 +66,11 @@ impl<'a> Parser<'a> {
             ),
             TokenType::Symbol(SymbolTokenType::STAR)
            | TokenType::Symbol(SymbolTokenType::SLASH)
-           | TokenType::Symbol(SymbolTokenType::PLUS) => {
-           // | TokenType::LESS
-            //| TokenType::GREATER
-          //  | TokenType::LESS_EQUAL
-          //  | TokenType::GREATER_EQUAL
+           | TokenType::Symbol(SymbolTokenType::PLUS)
+            | TokenType::Symbol(SymbolTokenType::LESS)
+            | TokenType::Symbol(SymbolTokenType::GREATER)
+             | TokenType::Symbol(SymbolTokenType::GREATER_EQUAL)
+           | TokenType::Symbol(SymbolTokenType::LESS_EQUAL)=>{
            // | TokenType::EQUAL_EQUAL
            // | TokenType::BANG_EQUAL => {
                 if self.exprs.is_empty() {

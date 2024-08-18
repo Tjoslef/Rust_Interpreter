@@ -97,12 +97,48 @@ fn remove_trailing_zeros(n: &f64) -> String {
                             (Value::Number(l),Value::Number(r)) => Value::Number(l - r),
                             _ => return Err("Operands must be numbers"),
                         }
-                        // Handle other operators as needed
-                        _ => todo!(),  // Placeholder for unhandled operations
+                        TokenType::Symbol(SymbolTokenType::GREATER) => match (left,right){
+                        (Value::Number(l),Value::Number(r)) => if l > r {
+                            Value::Bool(true)
+                        }else {
+                            Value::Bool(false)
+                        }
+                            _=> return Err("Operands must be number"),
+                        }
+                        TokenType::Symbol(SymbolTokenType::LESS) => match (left,right){
+                            (Value::Number(l),Value::Number(r)) => if l < r {
+                                Value::Bool(true)
+                            }else {
+                                Value::Bool(false)
+                            }
+                            _=> return Err("Operands must be number"),
+                        }
+                        TokenType::Symbol(SymbolTokenType::GREATER_EQUAL) => match (left,right){
+                            (Value::Number(l),Value::Number(r)) => if l >= r {
+                                Value::Bool(true)
+                            }else {
+                                Value::Bool(false)
+                            }
+                            _=> return Err("Operands must be number"),
+                        }
+                        TokenType::Symbol(SymbolTokenType::LESS_EQUAL) => match (left,right){
+                            (Value::Number(l),Value::Number(r)) => if l <= r {
+                                Value::Bool(true)
+                            }else {
+                                Value::Bool(false)
+                            }
+                            _=> return Err("Operands must be number"),
+                        }
+
+                        _ => todo!(),
                     }
-                }
+                        // Handle other operators as needed
+                          // Placeholder for unhandled operations
+                    }
+
                 _=>{return Err("mismatch")}
-            };
+                };
+
             Ok(value)
+            }
         }
-    }

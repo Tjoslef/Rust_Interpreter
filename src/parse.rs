@@ -42,7 +42,9 @@ impl<'a> Parser<'a> {
                 let new_num = token._value.clone();
 
                 if !new_num.contains("."){
-                   new_num1 = format!("{}.0",new_num);
+                  new_num1 = new_num;
+                    new_num1.push('.');
+                    new_num1.push('0');
                     Expr::FloatLit(new_num1.parse().unwrap())
                 }else {
                     Expr::FloatLit(new_num.parse().unwrap())
@@ -131,7 +133,7 @@ impl Display for Expr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Expr::BoolLite(b) => write!(f, "{b}"),
-            Expr::FloatLit(n) =>  write!(f, "{:.2}",n),
+            Expr::FloatLit(n) =>  write!(f, "{}",n),
             Expr::Literal(s) => write!(f, "{s}"),
             Expr::Group(g) => {
                 write!(f, "(group {g})")

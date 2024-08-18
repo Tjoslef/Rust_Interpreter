@@ -131,7 +131,7 @@ impl Display for Expr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Expr::BoolLite(b) => write!(f, "{b}"),
-            Expr::FloatLit(n) =>  write!(f, "{:.1000}",n),
+            Expr::FloatLit(n) =>  write!(f, "{:.2}",n),
             Expr::Literal(s) => write!(f, "{s}"),
             Expr::Group(g) => {
                 write!(f, "(group {g})")

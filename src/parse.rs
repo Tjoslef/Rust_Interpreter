@@ -1,11 +1,11 @@
+use std::fmt;
 use std::fmt::Display;
 use std::iter::Peekable;
 use std::process::exit;
 use std::slice::Iter;
-use bytes::Buf;
+
 use crate::{error, parse};
 use crate::token::{KeywordTokenType, LiteralTokenType, SymbolTokenType, Token, TokenType};
-use crate::token::KeywordTokenType::ELSE;
 
 #[derive(Clone,Debug)]
 pub struct Parser<'a> {
@@ -144,3 +144,4 @@ pub fn expr_error(token: &Token) -> ! {
     );
     exit(65);
 }
+

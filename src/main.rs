@@ -30,9 +30,13 @@ fn main() {
                 exit(65);
             }
         },
-        "parse" => match tokenize(filename, false) {
+        "parse" => match tokenize(filename, true) {
             Ok(tokens) => {
                 let mut parser = Parser::new(&tokens);
+                let exprs = parser.parse();
+                for par in exprs{
+                    println!("{}", par)
+                }
             }
             Err(e) => {
                 eprintln!("Error during tokenization: {:?}", e);

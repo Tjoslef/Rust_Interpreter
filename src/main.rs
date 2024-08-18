@@ -46,7 +46,10 @@ fn main() {
                 for expr in expressions {
                     match Evaluator::eval(expr) {
                         Ok(value) => println!("{}", value),
-                        Err(e) => eprintln!("Error: {}", e),
+                        Err(e) => {
+                            eprintln!("Error: {}", e);
+                            exit(70);
+                        }
                     }
                 }
             }

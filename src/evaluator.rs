@@ -95,7 +95,7 @@ fn remove_trailing_zeros(n: &f64) -> String {
                         }
                         TokenType::Symbol(SymbolTokenType::MINUS) =>match (left,right){
                             (Value::Number(l),Value::Number(r)) => Value::Number(l - r),
-                            _ => return Err("Operands must be numbers"),
+                            _ => return Err("Operand must be a number.")
                         }
                         TokenType::Symbol(SymbolTokenType::GREATER) => match (left,right){
                         (Value::Number(l),Value::Number(r)) => if l > r {

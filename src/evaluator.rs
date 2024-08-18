@@ -55,7 +55,7 @@ fn remove_trailing_zeros(n: &f64) -> String {
             let value = match expr {
                Expr::Nil => Value::Nil,
                 Expr::Literal(literal) => Value::String(literal.clone()),
-                Expr::FloatLit(int_val) => Value::Number(int_val.clone()),
+                Expr::FloatLit(int_val) => Value::Number(int_val.clone().parse().unwrap()),
                 Expr::BoolLite(bool_val) => Value::Bool(*bool_val),
                 Expr::Group(expr) => Evaluator::eval(expr)?,
                 Expr::Unary(op, expr) => {

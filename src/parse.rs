@@ -4,10 +4,11 @@ use std::fmt::Display;
 use std::iter::Peekable;
 use std::process::exit;
 use std::slice::Iter;
-
+use std::str::FromStr;
 use crate::{error, parse};
 use crate::evaluator::Value::String;
 use crate::token::{KeywordTokenType, LiteralTokenType, SymbolTokenType, Token, TokenType};
+use crate::token::KeywordTokenType::ELSE;
 
 #[derive(Clone,Debug)]
 pub struct Parser<'a> {
@@ -38,18 +39,31 @@ impl<'a> Parser<'a> {
             TokenType::Keyword(KeywordTokenType::FALSE) => Expr::BoolLite(false),
             TokenType::Literal(LiteralTokenType::STRING) => Expr::Literal(token._string.clone()),
             TokenType::Literal(LiteralTokenType::NUMBER) => {
-                let mut new_num1 = create_string::new();
-                let new_num = token._value.clone();
-
-                if !new_num.contains("."){
-                  new_num1 = new_num;
-                    new_num1.push('.');
-                    new_num1.push('0');
-                    Expr::FloatLit(new_num1.parse().unwrap())
+                let mut new_num = token._value.clone();
+                let dot = new_num.find(".");
+                if !new_num.contains(".") {
+                    new_num.push('.');
+                    new_num.push('0');
+                    Expr::FloatLit(new_num.clone())
+                } else if new_num.ends_with('0') {
+                    if let Some(dot) = new_num.find('.') {
+                        if let Some(dot) = new_num.find('.') {
+                            // Remove trailing zeros after the decimal point
+                            while new_num.ends_with('0') {
+                                new_num.pop();
+                            }
+                            if new_num.ends_with('.') {
+                                new_num.push('0')
+                            }
+                        }
+                        Expr::FloatLit(new_num)
+                    } else {
+                        Expr::FloatLit(new_num)
+                    }
                 }else {
-                    Expr::FloatLit(new_num.parse().unwrap())
+                    Expr::FloatLit(new_num)
                 }
-                },
+            }
             TokenType::Symbol(SymbolTokenType::LEFT_PAREN) => {
                 while let Some(token) = tokens.next() {
                     if token._type == TokenType::Symbol(SymbolTokenType::RIGHT_PAREN) {
@@ -121,7 +135,7 @@ impl<'a> Parser<'a> {
 #[derive(Clone,Debug)]
 
 pub enum Expr{
-    FloatLit(f64),
+    FloatLit(create_string),
     Literal(create_string),
     BoolLite(bool),
     Binary(Token, Box<Expr>, Box<Expr>),

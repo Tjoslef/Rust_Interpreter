@@ -156,7 +156,7 @@ impl Display for Expr {
                 write!(f, "({} {})", op._string, expr)
             }
             Expr::Binary(op, left, right) => {
-                write!(f, "({} {} {})", op._value, left, right)
+                write!(f, "({} {} {})", op._string, left, right)
             }
             Expr::Nil => write!(f, "nil"),
             _=> Ok(())

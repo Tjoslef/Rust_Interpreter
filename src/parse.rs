@@ -153,7 +153,7 @@ impl Display for Expr {
                 write!(f, "(group {g})")
             }
             Expr::Unary(op, expr) => {
-                write!(f, "({} {})", op._value, expr)
+                write!(f, "({} {})", op._string, expr)
             }
             Expr::Binary(op, left, right) => {
                 write!(f, "({} {} {})", op._value, left, right)

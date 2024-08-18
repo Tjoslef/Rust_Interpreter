@@ -1,3 +1,4 @@
+use std::string::String as create_string;
 use std::fmt;
 use std::fmt::Display;
 use std::iter::Peekable;
@@ -5,6 +6,7 @@ use std::process::exit;
 use std::slice::Iter;
 
 use crate::{error, parse};
+use crate::evaluator::Value::String;
 use crate::token::{KeywordTokenType, LiteralTokenType, SymbolTokenType, Token, TokenType};
 
 #[derive(Clone,Debug)]
@@ -36,8 +38,16 @@ impl<'a> Parser<'a> {
             TokenType::Keyword(KeywordTokenType::FALSE) => Expr::BoolLite(false),
             TokenType::Literal(LiteralTokenType::STRING) => Expr::Literal(token._string.clone()),
             TokenType::Literal(LiteralTokenType::NUMBER) => {
+                let mut new_num1 = create_string::new();
                 let new_num = token._value.clone();
-                Expr::FloatLit(new_num.parse().unwrap())},
+
+                if !new_num.contains("."){
+                   new_num1 = format!("{}.0",new_num);
+                    Expr::FloatLit(new_num1.parse().unwrap())
+                }else {
+                    Expr::FloatLit(new_num.parse().unwrap())
+                }
+                },
             TokenType::Symbol(SymbolTokenType::LEFT_PAREN) => {
                 while let Some(token) = tokens.next() {
                     if token._type == TokenType::Symbol(SymbolTokenType::RIGHT_PAREN) {
@@ -110,7 +120,7 @@ impl<'a> Parser<'a> {
 
 pub enum Expr{
     FloatLit(f64),
-    Literal(String),
+    Literal(create_string),
     BoolLite(bool),
     Binary(Token, Box<Expr>, Box<Expr>),
     Group(Box<Expr>),
@@ -121,7 +131,7 @@ impl Display for Expr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Expr::BoolLite(b) => write!(f, "{b}"),
-            Expr::FloatLit(n) => write!(f, "{n}"),
+            Expr::FloatLit(n) =>  write!(f, "{:.1}",n),
             Expr::Literal(s) => write!(f, "{s}"),
             Expr::Group(g) => {
                 write!(f, "(group {g})")

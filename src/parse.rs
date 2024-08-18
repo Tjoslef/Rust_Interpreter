@@ -70,9 +70,9 @@ impl<'a> Parser<'a> {
             | TokenType::Symbol(SymbolTokenType::LESS)
             | TokenType::Symbol(SymbolTokenType::GREATER)
              | TokenType::Symbol(SymbolTokenType::GREATER_EQUAL)
-           | TokenType::Symbol(SymbolTokenType::LESS_EQUAL)=>{
-           // | TokenType::EQUAL_EQUAL
-           // | TokenType::BANG_EQUAL => {
+           | TokenType::Symbol(SymbolTokenType::LESS_EQUAL)
+           | TokenType::Symbol(SymbolTokenType::EQUAL_EQUAL)
+           | TokenType::Symbol(SymbolTokenType::BANG_EQUAL) => {
                 if self.exprs.is_empty() {
                     expr_error(token)
                 }

@@ -129,6 +129,32 @@ fn remove_trailing_zeros(n: &f64) -> String {
                             }
                             _=> return Err("Operands must be number"),
                         }
+                        TokenType::Symbol(SymbolTokenType::EQUAL_EQUAL) => match (left,right){
+                            (Value::String(l),Value::String(r)) => if l == r {
+                                Value::Bool(true)
+                            }else {
+                                Value::Bool(false)
+                            }
+                            (Value::Number(l),Value::Number(r)) => if l == r {
+                                Value::Bool(true)
+                            }else {
+                                Value::Bool(false)
+                            }
+                            _=> Value::Bool(false)
+                        }
+                        TokenType::Symbol(SymbolTokenType::BANG_EQUAL) => match (left,right){
+                            (Value::String(l),Value::String(r)) => if l != r {
+                                Value::Bool(true)
+                            }else {
+                                Value::Bool(false)
+                            }
+                            (Value::Number(l),Value::Number(r)) => if l != r {
+                                Value::Bool(true)
+                            }else {
+                                Value::Bool(false)
+                            }
+                            _=> Value::Bool(false) ,
+                        }
 
                         _ => todo!(),
                     }
